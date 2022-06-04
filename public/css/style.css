@@ -1,0 +1,39 @@
+/*===============================================*/
+/* ------------- General Styles -----------------*/
+/*===============================================*/
+*{
+    font-family: 'Inconsolata', monospace;
+    box-sizing: border-box;
+}
+
+label, input{
+    all: unset
+}
+
+main{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+input{
+    border: 2px solid green;
+    border-radius: 5px;
+}
+
+/*===============================================*/
+/* ------------- Class Styles -------------------*/
+/*===============================================*/
+
+.formInput{
+    margin: 10px 0px;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    align-items: center;
+}
+
+.ABVInput{
+    display: flex;
+    margin: 5px 0px;
+}
