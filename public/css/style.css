@@ -36,6 +36,11 @@ button{
     align-self: center;
 }
 
+h3{
+    margin: 0px;
+    color: red;
+}
+
 /*===============================================*/
 /* ------------- Class Styles -------------------*/
 /*===============================================*/
@@ -57,4 +62,10 @@ button{
     background-color: red;
     padding-left: 20px;
     padding-right: 20px;
+}
+
+#results{
+    display: flex;
+    align-items: center;
+    flex-direction: column;
 }
