@@ -1,10 +1,12 @@
 {
   "dependencies": {
     "body-parser": "^1.20.0",
+    "ejs": "^3.1.8",
     "express": "^4.18.1",
     "mongodb": "^4.6.0"
   },
   "scripts": {
+    "dev": "nodemon server.js",
     "start": "node server.js"
   },
   "name": "suds2buds",
@@ -20,5 +22,8 @@
   "bugs": {
     "url": "https://github.com/MattWeinstein/suds2buds/issues"
   },
-  "homepage": "https://github.com/MattWeinstein/suds2buds#readme"
+  "homepage": "https://github.com/MattWeinstein/suds2buds#readme",
+  "devDependencies": {
+    "nodemon": "^2.0.16"
+  }
 }

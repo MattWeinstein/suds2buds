@@ -14,20 +14,34 @@
 <body>
 	<main>
 		<h1>Suds 2 Buds</h1>
-		<form action="POST">
+		<form method="POST" action="/beers">
 			<section class ="formInput">
-				<div>
+		    <div>
       		<label for="beerName">Beer Name</label>
-					<input name ="beerName" type="text" placeholder="Name of beer" class="ABVInput">
+			    <input id='beerName' name ="beerName" type="text" placeholder="Name of beer" >
       	</div>
 				<div>
-					<label for="abv">ABV</label>
-      		<input name ="abv" type="number" placeholder="Alcohol Percentage" class="ABVInput">
+					<label for="ABV">ABV</label>
+      		<input id='ABV' name ="abv" type='number' inputmode="numeric" step ='.01' placeholder="Alcohol Percentage">
 				</div>
+        <div>
+					<label for="quanity">Quanity</label>
+      		<input id='quanity' name ="quanity" type="number" placeholder="Number of Beer">
+				</div>
+				<div>
+					<label for="volumes">Size</label>
+      		<select id="volumes" name="volume">
+						<option value =10>10oz</option>
+						<option value =12 selected>12oz</option>
+						<option value =16oz>16oz</option>
+					</select>
+				</div>
+				<button class="button">Calculate</button>
 			</section>
-			<button class="button">Calculate</button>
-
     	</form>
+      <button id='deleteButton' class="button">Reset</button>
+
 	</main>
 </body>
+<script src="main.js"></script>
 </html>
