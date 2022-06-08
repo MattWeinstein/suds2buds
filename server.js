@@ -9,7 +9,7 @@ const MongoClient =require('mongodb').MongoClient
 const express = require('express')
 const res = require('express/lib/response')
 const app = express()
-const PORT = 1111
+const port = 1111
 
 let alcoholVolume = 0
 let budLights = 0
@@ -90,6 +90,6 @@ app.get('/beers',(req,res)=>{ //Make request to our own API
     res.json(beers)
 })
 
-app.listen(process.env.PORT || PORT,function(){
+app.listen(process.env.PORT || port,function(){
     console.log('Server is running')
 })
