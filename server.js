@@ -90,6 +90,6 @@ app.get('/beers',(req,res)=>{ //Make request to our own API
     res.json(beers)
 })
 
-app.listen(PORT,function(){
+app.listen(process.env.PORT || PORT,function(){
     console.log('Server is running')
 })
