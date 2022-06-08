@@ -6,7 +6,7 @@
     "mongodb": "^4.6.0"
   },
   "scripts": {
-    "dev": "nodemon server.js",
+    "start:dev": "nodemon server.js",
     "start": "node server.js"
   },
   "name": "suds2buds",
