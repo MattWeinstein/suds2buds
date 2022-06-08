@@ -62,7 +62,7 @@ MongoClient.connect('mongodb+srv://mattw412:Weinstein88@suds2buds.pxon0ka.mongod
                     alcoholVolume = 0
                     budLights = 0
                     console.log('hello')
-                    res.redirect('/')
+                    res.json("hello")
                 })
                 .catch(error=>console.log(error)) //What if theres en error in accessing data from endpoint
 
