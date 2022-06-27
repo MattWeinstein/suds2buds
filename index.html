@@ -16,31 +16,34 @@
 		<h1>Suds 2 Buds</h1>
 		<form method="POST" action="/beers">
 			<section class ="formInput">
+			<div>
+				<label for="email">Please enter your email</label>
+			  <input id='email' name ="email" type="text" placeholder="email" >
+			</div>
 		    <div>
-      		<label for="beerName">Beer Name</label>
-			    <input id='beerName' name ="beerName" type="text" placeholder="Name of beer" >
-      	</div>
-				<div>
-					<label for="ABV">ABV</label>
-      		<input id='ABV' name ="abv" type='number' inputmode="numeric" step ='.01' placeholder="Alcohol Percentage">
-				</div>
-        <div>
-					<label for="quanity">Quanity</label>
-      		<input id='quanity' name ="quanity" type="number" placeholder="Number of Beer">
-				</div>
-				<div>
-					<label for="volumes">Size</label>
-      		<select id="volumes" name="volume">
+      			<label for="beerName">Beer Name</label>
+				<input id='beerName' name ="beerName" type="text" placeholder="Name of beer" >
+      		</div>
+			<div>
+				<label for="ABV">ABV</label>
+      			<input id='ABV' name ="abv" type='number' inputmode="numeric" step ='.01' placeholder="Alcohol Percentage">
+			</div>
+        	<div>
+				<label for="quanity">Quanity</label>
+      			<input id='quanity' name ="quanity" type="number" placeholder="Number of Beer">
+			</div>
+			<div>
+				<label for="volumes">Size</label>
+      			<select id="volumes" name="volume">
 						<option value =10>10oz</option>
 						<option value =12 selected>12oz</option>
 						<option value =16oz>16oz</option>
 					</select>
-				</div>
+			</div>
 				<button class="button">Calculate</button>
 			</section>
     	</form>
-      <button id='deleteButton' class="button">Reset</button>
-
+      	<button id='deleteButton' class="button">Reset</button>
 	</main>
 </body>
 <script src="main.js"></script>

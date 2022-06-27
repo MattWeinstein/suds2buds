@@ -1,7 +1,6 @@
 document.querySelector('#deleteButton').addEventListener('click',deleteEverything)
 
 async function deleteEverything(){
-    console.log('hello')
     try{
     const response = await fetch('/beers',{
         method:'delete',
@@ -15,3 +14,5 @@ async function deleteEverything(){
 }
 
    
+// Get the inner text of the paragraph with email
+// if that doesn't exist, you need an email ot be entered

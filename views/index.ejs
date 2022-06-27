@@ -17,35 +17,42 @@
 		<h3><%= errorMessage %></h3>
 		<form method="POST" action="/beers">
 			<section class ="formInput">
+			<div>
+				<label for="fullName">Full name</label>
+			  <input id='fullName' name ="fullName" type="text" value="<%=userName%>" placeholder="Username" >
+			</div>
 		    <div>
       		<label for="beerName">Beer Name</label>
 			    <input id='beerName' name ="beerName" type="text" placeholder="Name of beer" >
-      	</div>
-				<div>
-					<label for="ABV">ABV</label>
-      				<input id='ABV' name ="abv" type='number' inputmode="decimal" step ='.01' placeholder="Alcohol Percentage">
-				</div>
-        <div>
-					<label for="quantity">quantity</label>
-      		<input id='quantity' name ="quantity" type="number" inputmode="numeric" placeholder="Number of Beer">
-				</div>
-				<div>
-					<label for="volumes">Size</label>
-      		<select id="volumes" name="volume">
+      		</div>
+			<div>
+				<label for="quantity">Quantity</label>
+      			<input id='quantity' name ="quantity" type="number" inputmode="numeric" placeholder="Number of Beer">
+			</div>
+			<div>
+				<label for="ABV">ABV</label>
+      			<input id='ABV' name ="abv" type='number' inputmode="decimal" step ='.01' placeholder="Alcohol Percentage">
+			</div>
+			<div>
+				<label for="volumes">Size</label>
+      				<select id="volumes" name="volume">
 						<option value =10>10oz</option>
 						<option value =12 selected>12oz</option>
 						<option value =16oz>16oz</option>
 					</select>
-				</div>
+			</div>
 				<button class="button">Calculate</button>
 			</section>
     	</form>
       <button id='deleteButton' class="button">Reset</button>
     <section id="results">
-        <h2>I have drank <%= budLights%> bud lights</h2>
 
-        <% for (let i =0;i<beerCollection.length;i++) {%>
-            <p>I put down <%= beerCollection[i].quantity%> <%= beerCollection[i].beerName%>'s </p>
+        <% for (let i =0;i<userBeerCollection.length;i++) {%>
+			<%if(i===0){%>
+				<h2><%=userName%> has had <%= userBudLight%> drinks</h2>
+
+			<% }%>
+            <p>I drank <%= userBeerCollection[i].quantity%> <%= userBeerCollection[i].beerName%>'s </p>
         <% } %>
     </section>
 	</main>
