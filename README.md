@@ -1,5 +1,7 @@
 # Suds2Buds
-Suds2Buds is being developed for a client looking to provide users the ability to calculate the number of standard beers they have consumed. Users can enter the kind of beer consumed, as well as the quantity, alcohol percentage and size. The application will convert this to Bud Lights, and succesfully return the number of standard drinks consumed in that session.
+Suds2Buds is being developed for a client looking to provide users the ability to calculate the number of standard beers they have consumed. Many breweries serve beer in larger quantities and ABV values than people are used to. As a result, it is easy to lose track of how many "beers" you have actually had. As one of the most popular beers in America, we chose a Bud Light to be the standard unit of measurement. Calculating the number of Bud Lights consumed will not only be useful to curious beer drinkers, but could be used as a safety protocol to those looking to operate a motor vehicle.
+
+Users of this application can enter the kind of beer consumed, the quantity, the alcohol percentage, and the size. Suds2Buds will return the number of Bud Lights this is equivalent to. 
 
 **Link to project:** https://suds2buds.herokuapp.com/
 
