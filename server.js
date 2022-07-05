@@ -13,6 +13,7 @@ const { userInfo } = require('os')
 const app = express()
 const port = 1111
 require('dotenv').config()
+console.log(process.env.DB_STRING)
 
 
 let budLights = 0
