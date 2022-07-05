@@ -12,6 +12,7 @@ const res = require('express/lib/response')
 const { userInfo } = require('os')
 const app = express()
 const port = 1111
+require('dotenv').config()
 
 
 let budLights = 0
@@ -21,13 +22,15 @@ let userEmail
 const userArr =[]
 let userBeerCollection=[]
 let userIndex
+let dbConnectionStr = process.env.DB_STRING
+
 
 app.set('view engine', 'ejs')
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
-MongoClient.connect('mongodb+srv://mattw412:Weinstein88@suds2buds.pxon0ka.mongodb.net/?retryWrites=true&w=majority')
+MongoClient.connect(dbConnectionStr)
     .then(client => {
         console.log('connected to the database')
         const db = client.db('suds2buds') // which database will be be using? (name on MongoDB)
@@ -87,8 +90,6 @@ MongoClient.connect('mongodb+srv://mattw412:Weinstein88@suds2buds.pxon0ka.mongod
                             }
                             budLights = Math.round((totalAlcoholContent/(4.2*12))*100)/100
                             totalAlcoholContent=0
-                            
-
                             userEmail.beers=budLights
 
                         })
