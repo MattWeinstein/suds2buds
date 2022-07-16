@@ -1,17 +1,38 @@
-<h1>Login to Suds2Buds</h1>
-<% if (messages.error) {%>
-    <%= messages.error %>
-    <% } %>
-<form action="/login" method="post">
-    <div>
-        <label for="emailLogin">Email</label>
-        <input id='emailLogin' name ="email" type="email" placeholder="Email" required>
-    </div>
-    <div>
-        <label for="passwordLogin">Password</label>
-        <input id='passwordLogin' name ="password" type="text" placeholder="Email" required>
-    </div>
-    <button type='submit' class="button">Login</button>
-</form>
-
-<a href ='/register'>Register Here</a>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<style>
+			@import url('https://fonts.googleapis.com/css2?family=Inconsolata&display=swap');
+		</style>
+		<link rel="stylesheet" href="css/style.css">
+    <title>Suds 2 Buds</title>
+</head>
+<body>
+	<main>
+        <h1>Suds2Buds Login</h1>
+        <h3><% if (messages.error) {%>
+            <%= messages.error %>
+            <% } %></h3>
+        <form action="/login" method="post">
+            <section class="formInput">
+                <div>
+                    <label for="nameLogin">Username</label>
+                    <input id='nameLogin' name ="username" type="text" placeholder="Username" required>
+                </div>
+            <div>
+                <label for="passwordLogin">Password</label>
+                <input id='passwordLogin' name ="password" type="text" placeholder="Password" required>
+            </div>
+            <button type='submit' class="button">Login</button>
+            </section>
+        </form>
+        <section>
+            <p><a href ='/register' class="link">Register Here</a>
+            </section>
+    </main>
+    </body>
+<script src="main.js"></script>
+</html>

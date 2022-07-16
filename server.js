@@ -27,7 +27,7 @@ let users =[]
 const initializePassport = require('./passport-config')
 initializePassport(
     passport,
-    email => users.find(user => user.email === email), // getUserByEmail function
+    username => users.find(user => user.username === username), // getUserByEmail function
     id => users.find(user => user.id===id) // getUserById function
 )
 
@@ -64,8 +64,6 @@ MongoClient.connect(dbConnectionStr)
        
         app.post('/beers',(req,res)=>{ // When a post request is made to the /beers endpoint on form submit, the following will happen
                 
-            console.log(userEmail)
-
                 // ==== Instatiates user object with email, beers, and ip address. ====//
                 userEmail = {
                     "username":req.body.fullName,
@@ -88,7 +86,7 @@ MongoClient.connect(dbConnectionStr)
                 console.log('hello')
 
                 // ==== VALIDATE ALL FORM INPUTS ==== //
-                if(!req.body.beerName|| !req.body.abv || !req.body.quantity || !req.body.fullName){
+                if(!req.body.beerName|| !req.body.abv || !req.body.quantity){
                     errorMessage = 'You must fill out the whole form'
                     res.redirect('/') 
                 } else if(req.body.abv<0 || req.body.abv>20){
@@ -103,10 +101,17 @@ MongoClient.connect(dbConnectionStr)
                 } else { // Form inputs correct -> do the following
                     // Convert to bud lights
                     
-                beerCollection.insertOne(req.body) // Insert the request into the database specified above (using .body from bodyparser)
+                // beerCollection.insertOne(req.body) // Insert the request into the database specified above (using .body from bodyparser)
+                beerCollection.insertOne({
+                    username:req.user.username,
+                    beerName:req.body.beerName,
+                    quantity:req.body.quantity,
+                    abv:req.body.abv,
+                    volume:req.body.volume
+                })
                 .then(result =>{  
                     console.log('beercollectionstarted')
-                    beerCollection.find({fullName:`${userEmail.username}`}).toArray() //Once added, we find all the database entries with that email
+                    beerCollection.find({username:req.user.username}).toArray() //Once added, we find all the database entries with that email
                         .then(result =>{  
                             userBeerCollection=result
                             console.log(userBeerCollection)
@@ -134,6 +139,7 @@ MongoClient.connect(dbConnectionStr)
                     // userObj[userEmail] = 0
                     userBeerCollection =[] // EJS to read nothing 
                     userEmail={}
+                    errorMessage =''
                     res.json("hello") // Sends response to client side JS so promise can be resolved.
                 })
                 .catch(error=>console.log(error)) //What if theres en error in accessing data from endpoint
@@ -147,7 +153,7 @@ MongoClient.connect(dbConnectionStr)
                 let userBudLight // userEmail.beers
                 let userName
                 if(userEmail){
-                    userName=userEmail.username
+                    userName=req.user.username
                     userBudLight=userEmail.beers
                 }else{
                     userName=''
@@ -186,9 +192,9 @@ app.post('/register', checkNotAuthenticated, async (req,res) => {
         users.push({
         id:Date.now().toString(),
         name:req.body.name,
-        email:req.body.email,
-        passwordletter:req.body.password,
-        password:hashedPassword
+        username:req.body.username,
+        password:hashedPassword,
+        beers:0
         })
 
         res.redirect('/login')
