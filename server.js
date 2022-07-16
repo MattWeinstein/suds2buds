@@ -45,6 +45,7 @@ app.set('view engine', 'ejs')
 app.use(express.json()) // Lets us look into request package
 app.use(express.urlencoded({ extended: false })) // Lets us look into request package
 app.use(flash())
+app.use(express.cookieParser('secret Option'));
 app.use(session({
     secret: process.env.SESSION_SECRET, //Should be set to random numbers to make more secret
     resave: false, //Should we resave session variables if nothing has changed?
