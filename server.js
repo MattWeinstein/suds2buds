@@ -17,6 +17,7 @@ const res = require('express/lib/response')
 const passport = require('passport')
 const flash = require('express-flash')
 const session = require('express-session')
+const methodOverride = require('method-override')
 const { userInfo } = require('os')
 const app = express()
 const port = 1111
@@ -26,7 +27,8 @@ let users =[]
 const initializePassport = require('./passport-config')
 initializePassport(
     passport,
-    email => users.find(user => user.email === email)
+    email => users.find(user => user.email === email), // getUserByEmail function
+    id => users.find(user => user.id===id) // getUserById function
 )
 
 
@@ -50,6 +52,7 @@ app.use(session({
 }))
 app.use(passport.initialize())//Sets up basics
 app.use(passport.session()) //Save variables to be able to use through entire session
+app.use(methodOverride('_method')) //Override form method - post -> delete
 
 
 //======== DATABASE INTERACTION START ========//
@@ -137,7 +140,7 @@ MongoClient.connect(dbConnectionStr)
 
             })
 
-        app.get('/',function(req,res){ // If path = /, run the function
+        app.get('/',checkAuthenticated, (req,res)=>{ // If path = /, run the function
             beerCollection.find().toArray() // Insert the request into the database specified above (using .body from bodyparser)
             .then(result =>{  
                 // console.log(userEmail.keys(email))
@@ -150,6 +153,7 @@ MongoClient.connect(dbConnectionStr)
                     userName=''
                     userBudLight='0' 
                 }
+                userName=req.user.name
                 res.render('index.ejs',{userBeerCollection,userBudLight,errorMessage,userName})  
             })
             .catch(error=>console.log(error)) //What if theres en error in accessing data from endpoint
@@ -163,20 +167,20 @@ MongoClient.connect(dbConnectionStr)
 
 app.use(express.static(__dirname+'/public')) // All files in public fodler are being read
 
-app.get('/login',(req,res)=>{
+app.get('/login',checkNotAuthenticated, (req,res)=>{
     res.render('login.ejs')
 })
 
-app.post('/login',passport.authenticate('local',{ //Passport middleware to handle all redirects upon login
+app.post('/login',checkNotAuthenticated,passport.authenticate('local',{ //Passport middleware to handle all redirects upon login
     successRedirect: '/',
     failureRedirect: '/login',
     failureFlash: true //Displays flash message to user (whatever is set in the error messages)
 }))
-app.get('/register',(req,res)=>{
+app.get('/register',checkNotAuthenticated,(req,res)=>{
     res.render('register.ejs')
 })
 
-app.post('/register', async (req,res) => {
+app.post('/register', checkNotAuthenticated, async (req,res) => {
     try {
         const hashedPassword = await bcrypt.hash(req.body.password,10)
         users.push({
@@ -197,6 +201,28 @@ app.post('/register', async (req,res) => {
 app.get('/beers',(req,res)=>{ //Make request to our own API
     res.json(beers)
 })
+
+
+app.delete('/logout',(req,res)=>{
+    req.logOut((err)=>{
+        if (err){return next(err)}
+    })
+    res.redirect('/login')
+})
+
+function checkAuthenticated(req,res,next){ //If you're not authenticated, you get redirected to login 
+    if(req.isAuthenticated()){ //Returns T/F
+        return next()
+    }
+    res.redirect('/login')
+}
+
+function checkNotAuthenticated(req,res,next){//If you are authenticated, you can only access the login and register pages
+    if(req.isAuthenticated()){
+        return res.redirect('/')
+    }
+    next()
+}
 
 app.listen(process.env.PORT || port,function(){
     console.log('Server is running')

@@ -14,6 +14,8 @@
 <body>
 	<main>
 		<h1>Suds 2 Buds Test</h1>
+		<h3><%= userName %></h3>
+
 		<h3><%= errorMessage %></h3>
 		<form method="POST" action="/beers">
 			<section class ="formInput">
@@ -55,6 +57,9 @@
             <p>I drank <%= userBeerCollection[i].quantity%> <%= userBeerCollection[i].beerName%>'s </p>
         <% } %>
     </section>
+	<form method="POST" action="/logout?_method=DELETE">
+		<button type="'submit">Log out</button>
+	</form>
 	</main>
 </body>
 <script src="main.js"></script>
