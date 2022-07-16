@@ -17,6 +17,7 @@ const res = require('express/lib/response')
 const passport = require('passport')
 const flash = require('express-flash')
 const session = require('express-session')
+const cookieParser = require('cookie-parser')
 const methodOverride = require('method-override')
 const { userInfo } = require('os')
 const app = express()
@@ -40,12 +41,11 @@ const userArr =[]
 let userBeerCollection=[]
 let dbConnectionStr = process.env.DB_STRING
 
-
+console.log(process.env.SESSION_SECRET)
 app.set('view engine', 'ejs') 
 app.use(express.json()) // Lets us look into request package
 app.use(express.urlencoded({ extended: false })) // Lets us look into request package
 app.use(flash())
-app.use(express.cookieParser('secret Option'));
 app.use(session({
     secret: process.env.SESSION_SECRET, //Should be set to random numbers to make more secret
     resave: false, //Should we resave session variables if nothing has changed?
