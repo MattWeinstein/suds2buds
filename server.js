@@ -27,9 +27,9 @@ let dbConnectionStr = process.env.DB_STRING
 
 
 app.set('view engine', 'ejs')
-
-app.use(express.json())
-app.use(express.urlencoded({ extended: true }))
+ 
+app.use(express.json()) // Lets us look into request package
+app.use(express.urlencoded({ extended: true })) // Lets us look into request package
 
 MongoClient.connect(dbConnectionStr)
     .then(client => {
