@@ -2,6 +2,10 @@
 // Show all other beers in DOM
 // Host on Heroku
 
+if(process.env.NODE_ENV !== 'production'){
+    require('dotenv').config()
+}
+
 const fs = require('fs')
 const http = require('http')
 const ip =require('ip')
@@ -11,6 +15,8 @@ const express = require('express')
 const bcrypt = require('bcrypt')
 const res = require('express/lib/response')
 const passport = require('passport')
+const flash = require('express-flash')
+const session = require('express-session')
 const { userInfo } = require('os')
 const app = express()
 const port = 1111
@@ -24,11 +30,6 @@ initializePassport(
 )
 
 
-require('dotenv').config()
-console.log(process.env.DB_STRING)
-
-
-
 let budLights = 0
 let totalAlcoholContent = 0
 let errorMessage
@@ -39,9 +40,17 @@ let dbConnectionStr = process.env.DB_STRING
 
 
 app.set('view engine', 'ejs') 
- 
 app.use(express.json()) // Lets us look into request package
 app.use(express.urlencoded({ extended: false })) // Lets us look into request package
+app.use(flash())
+app.use(session({
+    secret: process.env.SESSION_SECRET, //Should be set to random numbers to make more secret
+    resave: false, //Should we resave session variables if nothing has changed?
+    saveUninitialized: false //Do you want to save an empty value in the session if there is nothing saved
+}))
+app.use(passport.initialize())//Sets up basics
+app.use(passport.session()) //Save variables to be able to use through entire session
+
 
 //======== DATABASE INTERACTION START ========//
 MongoClient.connect(dbConnectionStr)
@@ -122,7 +131,6 @@ MongoClient.connect(dbConnectionStr)
                     // userObj[userEmail] = 0
                     userBeerCollection =[] // EJS to read nothing 
                     userEmail={}
-                    console.log('hello')
                     res.json("hello") // Sends response to client side JS so promise can be resolved.
                 })
                 .catch(error=>console.log(error)) //What if theres en error in accessing data from endpoint
@@ -159,23 +167,23 @@ app.get('/login',(req,res)=>{
     res.render('login.ejs')
 })
 
-app.post('/login',(req,res)=>{
-
-})
-
+app.post('/login',passport.authenticate('local',{ //Passport middleware to handle all redirects upon login
+    successRedirect: '/',
+    failureRedirect: '/login',
+    failureFlash: true //Displays flash message to user (whatever is set in the error messages)
+}))
 app.get('/register',(req,res)=>{
     res.render('register.ejs')
 })
 
 app.post('/register', async (req,res) => {
-    console.log('hello')
-
     try {
-        const hashedPassword = await bcrypt.hash(req.body.passwordRegister,10)
+        const hashedPassword = await bcrypt.hash(req.body.password,10)
         users.push({
         id:Date.now().toString(),
-        name:req.body.nameRegister,
-        email:req.body.emailRegister,
+        name:req.body.name,
+        email:req.body.email,
+        passwordletter:req.body.password,
         password:hashedPassword
         })
 
