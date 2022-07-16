@@ -8,12 +8,25 @@ const ip =require('ip')
 const bodyParser = require('body-parser')
 const MongoClient =require('mongodb').MongoClient
 const express = require('express')
+const bcrypt = require('bcrypt')
 const res = require('express/lib/response')
+const passport = require('passport')
 const { userInfo } = require('os')
 const app = express()
 const port = 1111
+
+let users =[]
+
+const initializePassport = require('./passport-config')
+initializePassport(
+    passport,
+    email => users.find(user => user.email === email)
+)
+
+
 require('dotenv').config()
 console.log(process.env.DB_STRING)
+
 
 
 let budLights = 0
@@ -22,15 +35,15 @@ let errorMessage
 let userEmail
 const userArr =[]
 let userBeerCollection=[]
-let userIndex
 let dbConnectionStr = process.env.DB_STRING
 
 
-app.set('view engine', 'ejs')
+app.set('view engine', 'ejs') 
  
 app.use(express.json()) // Lets us look into request package
-app.use(express.urlencoded({ extended: true })) // Lets us look into request package
+app.use(express.urlencoded({ extended: false })) // Lets us look into request package
 
+//======== DATABASE INTERACTION START ========//
 MongoClient.connect(dbConnectionStr)
     .then(client => {
         console.log('connected to the database')
@@ -138,9 +151,40 @@ MongoClient.connect(dbConnectionStr)
     .catch(error=>{
         console.log(`We have an error: ${error}`)
     })
+//======== DATABASE INTERACTION END ========//
 
 app.use(express.static(__dirname+'/public')) // All files in public fodler are being read
 
+app.get('/login',(req,res)=>{
+    res.render('login.ejs')
+})
+
+app.post('/login',(req,res)=>{
+
+})
+
+app.get('/register',(req,res)=>{
+    res.render('register.ejs')
+})
+
+app.post('/register', async (req,res) => {
+    console.log('hello')
+
+    try {
+        const hashedPassword = await bcrypt.hash(req.body.passwordRegister,10)
+        users.push({
+        id:Date.now().toString(),
+        name:req.body.nameRegister,
+        email:req.body.emailRegister,
+        password:hashedPassword
+        })
+
+        res.redirect('/login')
+    } catch{
+        res.redirect('/register')
+    }
+    console.log(users)
+})
 
 app.get('/beers',(req,res)=>{ //Make request to our own API
     res.json(beers)
