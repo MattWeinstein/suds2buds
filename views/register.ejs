@@ -1,18 +1,39 @@
-<h1>Register for Suds2Buds</h1>
-<form action="/register" method="post">
-    <div>
-        <label for="nameRegister">Full Name</label>
-        <input id='nameRegister' name ="name" type="text" placeholder="Full Name" required>
-    </div>
-    <div>
-        <label for="emailRegister">Email</label>
-        <input id='emailRegister' name ="email" type="email" placeholder="Email" required>
-    </div>
-    <div>
-        <label for="passwordRegister">Password</label>
-        <input id='passwordRegister' name ="password" type="text" placeholder="Password" required>
-    </div>
-    <button type='submit' class="button">Register</button>
-</form>
-
-<a href ='/login'>Login Here</a>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<style>
+			@import url('https://fonts.googleapis.com/css2?family=Inconsolata&display=swap');
+		</style>
+		<link rel="stylesheet" href="css/style.css">
+    <title>Suds 2 Buds</title>
+</head>
+<body>
+	<main>
+        <h1>Register for Suds2Buds</h1>
+        <form action="/register" method="post">
+            <section class="formInput">
+            <div>
+                <label for="nameRegister">Name</label>
+                <input id='nameRegister' name ="name" type="text" placeholder="Full Name" required>
+            </div>
+            <div>
+                <label for="emailRegister">Username</label>
+                <input id='emailRegister' name ="username" type="text" placeholder="Username" required>
+            </div>
+            <div>
+                <label for="passwordRegister">Password</label>
+                <input id='passwordRegister' name ="password" type="text" placeholder="Password" required>
+            </div>
+            <button type='submit' class="button">Register</button>
+            </section>
+        </form>
+        <section>
+        <p>Already have an account? Sign in <a href ='/login' class = 'link'>here</a></p>
+        </section>
+    </main>
+</body>
+<script src="main.js"></script>
+</html>

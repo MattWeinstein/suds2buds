@@ -2,10 +2,10 @@ const LocalStrategy = require('passport-local').Strategy
 const bcrypt = require('bcrypt')
 
 
-function initialize (passport,getUserByEmail,getUserById){
+function initialize (passport,getUserByUsername,getUserById){
 
-    const authenticateUser = async (email,password,done) => {
-        const user = getUserByEmail(email) //Find us a user by email
+    const authenticateUser = async (username,password,done) => {
+        const user = getUserByUsername(username) //Find us a user by email
         console.log('rawr')
         console.log(user)
         console.log(password)
@@ -20,7 +20,6 @@ function initialize (passport,getUserByEmail,getUserById){
                 return done(null, user)
             }else{
                 console.log('wrong')
-
                 return done(null,false,{message: 'Password incorrect'})
             }
         } catch(e){
@@ -28,7 +27,7 @@ function initialize (passport,getUserByEmail,getUserById){
         }
     }
 
-    passport.use(new LocalStrategy({usernameField: 'email'},authenticateUser)) 
+    passport.use(new LocalStrategy(authenticateUser)) 
 // Local Strategy has builtin username, password. Will get from form and "name" attribute must match
     passport.serializeUser((user,done) => done(null,user.id)) //Null for error
     passport.deserializeUser((id,done) => {
