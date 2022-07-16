@@ -12,7 +12,6 @@
     "passport-local": "^1.0.0"
   },
   "scripts": {
-    "startDev": "node server.js",
     "start": "node server.js"
   },
   "name": "suds2buds",
