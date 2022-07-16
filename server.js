@@ -17,7 +17,6 @@ const res = require('express/lib/response')
 const passport = require('passport')
 const flash = require('express-flash')
 const session = require('express-session')
-const cookieParser = require('cookie-parser')
 const methodOverride = require('method-override')
 const { userInfo } = require('os')
 const app = express()
@@ -40,7 +39,6 @@ let userEmail
 const userArr =[]
 let userBeerCollection=[]
 let dbConnectionStr = process.env.DB_STRING
-
 console.log(process.env.SESSION_SECRET)
 app.set('view engine', 'ejs') 
 app.use(express.json()) // Lets us look into request package
