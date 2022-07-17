@@ -16,6 +16,7 @@ const bcrypt = require('bcrypt')
 const res = require('express/lib/response')
 const passport = require('passport')
 const flash = require('express-flash')
+const cookieParser = require('cookie-parser')
 const session = require('express-session')
 const methodOverride = require('method-override')
 const { userInfo } = require('os')
@@ -44,10 +45,12 @@ app.set('view engine', 'ejs')
 app.use(express.json()) // Lets us look into request package
 app.use(express.urlencoded({ extended: false })) // Lets us look into request package
 app.use(flash())
+app.use(cookieParser())
 app.use(session({
-    secret: process.env.SESSION_SECRET, //Should be set to random numbers to make more secret
+    secret: 'thisisthesecret', //Should be set to random numbers to make more secret
+    cookie: {maxAge:(24*1000*60*60)},
     resave: false, //Should we resave session variables if nothing has changed?
-    saveUninitialized: false //Do you want to save an empty value in the session if there is nothing saved
+    saveUninitialized: true //Do you want to save an empty value in the session if there is nothing saved
 }))
 app.use(passport.initialize())//Sets up basics
 app.use(passport.session()) //Save variables to be able to use through entire session
