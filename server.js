@@ -29,7 +29,7 @@ initializePassport(
     username => users.find(user => user.username === username), // getUserByEmail function
     id => users.find(user => user.id===id) // getUserById function
 )
-
+console.log(sessionSecret)
 
 let budLights = 0
 let totalAlcoholContent = 0
@@ -39,8 +39,11 @@ const userArr =[]
 let userBeerCollection=[]
 let dbConnectionStr = process.env.DB_STRING
 let sessionSecret = process.env.SESSION_SECRET
-
 const oneDay = 24*1000*60*60
+
+console.log(sessionSecret)
+console.log(dbConnectionStr)
+
 
 app.set('view engine', 'ejs') 
 app.use(express.json()) // Lets us look into request package
