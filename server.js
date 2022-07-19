@@ -38,6 +38,7 @@ let userEmail
 const userArr =[]
 let userBeerCollection=[]
 let dbConnectionStr = process.env.DB_STRING
+let sessionSecret = process.env.SESSION_SECRET
 const oneDay = 24*1000*60*60
 
 app.set('view engine', 'ejs') 
@@ -47,7 +48,7 @@ app.use(express.static(__dirname+'/public')) // All files in public folder are b
 app.use(flash())
 app.use(cookieParser())
 app.use(session({
-    secret: SESSION_SECRET, //Should be set to random numbers to make more secret
+    secret: sessionSecret, //Should be set to random numbers to make more secret
     cookie: {maxAge:oneDay}, //Cookie expiry time
     saveUninitialized: true, //Do you want to save an empty value in the session if there is nothing saved
     resave: false //Should we resave session variables if nothing has changed? True may result in two parallel requests to server
