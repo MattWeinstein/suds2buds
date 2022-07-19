@@ -1,13 +1,8 @@
 // Have # of bud lights show up in DOM 
 // Show all other beers in DOM
 // Host on Heroku
-let dbConnectionStr 
-let sessionSecret
-
-if(process.env.NODE_ENV !== 'production'){ // If it is not in production, use .env. If it is in production, we will use the variables assigned in Heroku
+if(process.env.NODE_ENV !== 'production'){ // If it is not in production, use .env. If it is in production, we will use the secret variables we assigned in Heroku
     require('dotenv').config()
-    dbConnectionStr = process.env.DB_STRING
-    sessionSecret = process.env.SESSION_SECRET
 }
 
 const http =require('http')
@@ -42,6 +37,8 @@ let errorMessage
 let userEmail
 const userArr =[]
 let userBeerCollection=[]
+let dbConnectionStr = process.env.DB_STRING
+let sessionSecret = process.env.SESSION_SECRET
 
 const oneDay = 24*1000*60*60
 
