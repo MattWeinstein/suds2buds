@@ -47,7 +47,7 @@ app.use(express.static(__dirname+'/public')) // All files in public folder are b
 app.use(flash())
 app.use(cookieParser())
 app.use(session({
-    secret: process.env.SESSION_SECRET, //Should be set to random numbers to make more secret
+    secret: SESSION_SECRET, //Should be set to random numbers to make more secret
     cookie: {maxAge:oneDay}, //Cookie expiry time
     saveUninitialized: true, //Do you want to save an empty value in the session if there is nothing saved
     resave: false //Should we resave session variables if nothing has changed? True may result in two parallel requests to server
