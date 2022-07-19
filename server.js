@@ -4,10 +4,8 @@
 
 if(process.env.NODE_ENV !== 'production'){
     require('dotenv').config()
+    console.log('dotenv')
 }
-
-const fs = require('fs')
-const http = require('http')
 const ip =require('ip')
 const bodyParser = require('body-parser')
 const MongoClient =require('mongodb').MongoClient
@@ -17,7 +15,7 @@ const res = require('express/lib/response')
 const passport = require('passport')
 const flash = require('express-flash')
 const cookieParser = require('cookie-parser')
-const session = require('cookie-session')
+const session = require('express-session')
 const methodOverride = require('method-override')
 const { userInfo } = require('os')
 const app = express()
@@ -40,17 +38,19 @@ let userEmail
 const userArr =[]
 let userBeerCollection=[]
 let dbConnectionStr = process.env.DB_STRING
-console.log(process.env.SESSION_SECRET)
+const oneDay = 24*1000*60*60
+
 app.set('view engine', 'ejs') 
 app.use(express.json()) // Lets us look into request package
-app.use(express.urlencoded({ extended: false })) // Lets us look into request package
+app.use(express.urlencoded({ extended: true })) // Lets us look into request package
+app.use(express.static(__dirname+'/public')) // All files in public folder are being read
 app.use(flash())
 app.use(cookieParser())
 app.use(session({
-    secret: 'thisisthesecret', //Should be set to random numbers to make more secret
-    cookie: {maxAge:(24*1000*60*60)},
-    resave: false, //Should we resave session variables if nothing has changed?
-    saveUninitialized: true //Do you want to save an empty value in the session if there is nothing saved
+    secret: process.env.SESSION_SECRET, //Should be set to random numbers to make more secret
+    cookie: {maxAge:oneDay}, //Cookie expiry time
+    saveUninitialized: true, //Do you want to save an empty value in the session if there is nothing saved
+    resave: false //Should we resave session variables if nothing has changed? True may result in two parallel requests to server
 }))
 app.use(passport.initialize())//Sets up basics
 app.use(passport.session()) //Save variables to be able to use through entire session
@@ -172,8 +172,6 @@ MongoClient.connect(dbConnectionStr)
         console.log(`We have an error: ${error}`)
     })
 //======== DATABASE INTERACTION END ========//
-
-app.use(express.static(__dirname+'/public')) // All files in public fodler are being read
 
 app.get('/login',checkNotAuthenticated, (req,res)=>{
     res.render('login.ejs')
