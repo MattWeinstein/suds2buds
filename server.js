@@ -40,9 +40,8 @@ let dbConnectionStr = process.env.DB_STRING
 let sessionSecret = process.env.SESSION_SECRET
 const oneDay = 24*1000*60*60
 
-console.log(sessionSecret)
 console.log(dbConnectionStr)
-
+console.log(sessionSecret)
 
 app.set('view engine', 'ejs') 
 app.use(express.json()) // Lets us look into request package
