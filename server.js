@@ -29,7 +29,6 @@ initializePassport(
     username => users.find(user => user.username === username), // getUserByEmail function
     id => users.find(user => user.id===id) // getUserById function
 )
-console.log(sessionSecret)
 
 let budLights = 0
 let totalAlcoholContent = 0
