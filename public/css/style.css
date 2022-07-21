@@ -130,6 +130,23 @@ h2{
 
 
 
+
+
+#logoutButton{
+    background-color: gray;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+#logoutButton:hover{
+    background-color: rgb(173, 161, 161);
+}
+
+#logoutButton:focus{
+    background-color: rgb(33, 32, 32);
+}
+
+
 #deleteButton{
     background-color: red;
     padding-left: 20px;

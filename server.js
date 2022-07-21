@@ -20,7 +20,6 @@ const methodOverride = require('method-override')
 const { userInfo } = require('os')
 const app = express()
 const port = 1111
-
 let users =[]
 
 const initializePassport = require('./passport-config')
@@ -162,6 +161,13 @@ app.get('/login',checkNotAuthenticated, (req,res)=>{
     res.render('login.ejs')
 })
 
+<<<<<<< HEAD
+=======
+app.get('/login',checkNotAuthenticated, (req,res)=>{
+    res.render('login.ejs')
+})
+
+>>>>>>> 40c072f1b33a5b48b9b5be6e854a00ebefe3ddf5
 app.post('/login',checkNotAuthenticated,passport.authenticate('local',{ //Passport middleware to handle all redirects upon login
     successRedirect: '/',
     failureRedirect: '/login',
