@@ -1,9 +1,7 @@
 // Have # of bud lights show up in DOM 
 // Show all other beers in DOM
 // Host on Heroku
-if (process.env.NODE_ENV !== 'production') { // If it is not in production, use .env. If it is in production, we will use the secret variables we assigned in Heroku
-    require('dotenv').config()
-}
+require('dotenv').config()
 
 const http = require('http')
 const ip = require('ip')
