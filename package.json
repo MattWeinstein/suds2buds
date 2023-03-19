@@ -33,7 +33,7 @@
   },
   "homepage": "https://github.com/MattWeinstein/suds2buds#readme",
   "devDependencies": {
-    "dotenv": "^16.0.1",
+    "dotenv": "^16.0.3",
     "nodemon": "^1.4.1"
   }
 }
