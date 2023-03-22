@@ -70,7 +70,7 @@ MongoClient.connect(dbConnectionStr)
         console.log(`We have an error: ${error}`)
     })
 
-app.post('/beers', (req, res) => { // When a post request is made to the /beers endpoint on form submit, the following will happen
+app.post('/beers/', (req, res) => { // When a post request is made to the /beers endpoint on form submit, the following will happen
 
     // ==== Instatiates user object with email, beers, and ip address. ====//
     userEmail = {
@@ -140,7 +140,7 @@ app.post('/beers', (req, res) => { // When a post request is made to the /beers 
     }
 })
 
-app.delete('/beers', (req, res) => {
+app.delete('/beers/', (req, res) => {
     beerCollection.deleteMany({ fullName: userEmail.username }) // Delete all collections in the DB for that user
         .then(results => { // Manual reset of all variables
             totalAlcoholContent = 0
@@ -177,21 +177,21 @@ app.get('/', checkAuthenticated, (req, res) => { // If path = /, run the functio
 //======== DATABASE INTERACTION END ========//
 
 // Gets called by FailureRedirect
-app.get('/login', checkNotAuthenticated, (req, res) => {
+app.get('/login/', checkNotAuthenticated, (req, res) => {
     res.render('login.ejs')
 })
 
 // Post on /login route called on form submit
-app.post('/login', checkNotAuthenticated, passport.authenticate('local', { //Passport middleware to handle all redirects upon login
+app.post('/login/', checkNotAuthenticated, passport.authenticate('local', { //Passport middleware to handle all redirects upon login
     successRedirect: '/',
     failureRedirect: '/login',
     failureFlash: true //Displays flash message to user (whatever is set in the error messages)
 }))
-app.get('/register', checkNotAuthenticated, (req, res) => {
+app.get('/register/', checkNotAuthenticated, (req, res) => {
     res.render('register.ejs')
 })
 
-app.post('/register', checkNotAuthenticated, async (req, res) => {
+app.post('/register/', checkNotAuthenticated, async (req, res) => {
 
     try {
         const hashedPassword = await bcrypt.hash(req.body.password, 10)
@@ -203,30 +203,30 @@ app.post('/register', checkNotAuthenticated, async (req, res) => {
             beers: 0
         })
 
-        res.redirect('/login')
+        res.redirect('/login/')
     } catch {
-        res.redirect('/register')
+        res.redirect('/register/')
     }
     console.log(users)
 })
 
-app.get('/beers', (req, res) => { //Make request to our own API
+app.get('/beers/', (req, res) => { //Make request to our own API
     res.json(beers)
 })
 
 
-app.delete('/logout', (req, res) => {
+app.delete('/logout/', (req, res) => {
     req.logOut((err) => {
         if (err) { return next(err) }
     })
-    res.redirect('/login')
+    res.redirect('/login/')
 })
 
 function checkAuthenticated(req, res, next) { //If you're not authenticated, you get redirected to login 
     if (req.isAuthenticated()) { //Returns T/F
         return next()
     }
-    res.redirect('/login')
+    res.redirect('/login/')
 }
 
 function checkNotAuthenticated(req, res, next) {//If you are authenticated, you can only access the login and register pages
