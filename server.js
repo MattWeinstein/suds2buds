@@ -185,10 +185,13 @@ app.post('/login', checkNotAuthenticated, passport.authenticate('local', { //Pas
     failureFlash: true //Displays flash message to user (whatever is set in the error messages)
 }))
 app.get('/register', checkNotAuthenticated, (req, res) => {
+    console.log('Not authenticated')
     res.render('register.ejs')
 })
 
 app.post('/register', checkNotAuthenticated, async (req, res) => {
+    console.log('Yes authenticated')
+
     try {
         const hashedPassword = await bcrypt.hash(req.body.password, 10)
         users.push({

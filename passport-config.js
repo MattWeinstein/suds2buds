@@ -6,7 +6,6 @@ function initialize(passport, getUserByUsername, getUserById) {
 
     const authenticateUser = async (username, password, done) => {
         const user = getUserByUsername(username) //Find us a user by email
-        console.log('rawr')
         console.log('done')
 
         if (user == null) { //User will be undefined if cannot find, thus same value (triple equal will not work)
