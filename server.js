@@ -36,6 +36,7 @@ const userArr = []
 let userBeerCollection = []
 let dbConnectionStr = process.env.DB_STRING
 let sessionSecret = process.env.SESSION_SECRET
+let beerCollection
 const oneDay = 24 * 1000 * 60 * 60
 
 app.set('view engine', 'ejs')
@@ -63,117 +64,116 @@ MongoClient.connect(dbConnectionStr)
             console.log('Server is running')
         })
         const db = client.db('suds2buds') // which database will be be using? (name on MongoDB)
-        const beerCollection = db.collection('beers') // Create collection on the database
-
-        app.post('/beers', (req, res) => { // When a post request is made to the /beers endpoint on form submit, the following will happen
-
-            // ==== Instatiates user object with email, beers, and ip address. ====//
-            userEmail = {
-                "username": req.body.fullName,
-                "beers": 0,
-                ip_address: ip.address()
-            }
-            console.log(userEmail.username)
-
-            if (userArr.length === 0) {     // Edge case if first entry
-                userArr.push(userEmail)
-            } else {
-                for (let i = 0; i < userArr.length; i++) { // Adds user if it does not exist
-                    if (userArr[i].username === req.body.fullName) {
-                        break  // Breaks for loop if found
-                    }
-                    if (i === userArr.length - 1) { // If for loop ends without finding an email, add user
-                        userArr.push(userEmail)
-                    }
-                }
-            }
-            console.log('hello')
-
-            // ==== VALIDATE ALL FORM INPUTS ==== //
-            if (!req.body.beerName || !req.body.abv || !req.body.quantity) {
-                errorMessage = 'You must fill out the whole form'
-                res.redirect('/')
-            } else if (req.body.abv < 0 || req.body.abv > 20) {
-                errorMessage = 'Please enter a reasonable alcohol percentage'
-                res.redirect('/')
-            } else if (req.body.quantity < 0) {
-                errorMessage = 'If you drank negative beers you are doing this wrong. Enter a positive # of beers'
-                res.redirect('/')
-            } else if (req.body.quantity > 30) {
-                errorMessage = 'This calculator supports a maximum of one (1) Wade Boggs per entry. Enter how many beers you drank.'
-                res.redirect('/')
-            } else { // Form inputs correct -> do the following
-                // Convert to bud lights
-
-                // beerCollection.insertOne(req.body) // Insert the request into the database specified above (using .body from bodyparser)
-                beerCollection.insertOne({
-                    username: req.user.username,
-                    beerName: req.body.beerName,
-                    quantity: req.body.quantity,
-                    abv: req.body.abv,
-                    volume: req.body.volume
-                })
-                    .then(result => {
-                        console.log('beercollectionstarted')
-                        beerCollection.find({ username: req.user.username }).toArray() //Once added, we find all the database entries with that email
-                            .then(result => {
-                                userBeerCollection = result
-                                console.log(userBeerCollection)
-                                for (let i = 0; i < result.length; i++) { // Perform the calculation
-                                    let selectedInput = result[i]
-                                    totalAlcoholContent += Math.round(Number(selectedInput.abv) * parseInt(selectedInput.quantity) * parseInt(selectedInput.volume))
-                                }
-                                budLights = Math.round((totalAlcoholContent / (4.2 * 12)) * 100) / 100
-                                totalAlcoholContent = 0
-                                userEmail.beers = budLights
-
-                            })
-                        res.redirect('/')   //We don't need to do anything so we redirect it back to main page
-                        errorMessage = ''
-                    })
-                    .catch(error => console.log(error)) //What if theres en error in accessing data from endpoint
-            }
-        })
-
-        app.delete('/beers', (req, res) => {
-            beerCollection.deleteMany({ fullName: userEmail.username }) // Delete all collections in the DB for that user
-                .then(results => { // Manual reset of all variables
-                    totalAlcoholContent = 0
-                    budLights = 0
-                    // userObj[userEmail] = 0
-                    userBeerCollection = [] // EJS to read nothing 
-                    userEmail = {}
-                    errorMessage = ''
-                    res.json("hello") // Sends response to client side JS so promise can be resolved.
-                })
-                .catch(error => console.log(error)) //What if theres en error in accessing data from endpoint
-
-        })
-
-        app.get('/', checkAuthenticated, (req, res) => { // If path = /, run the function
-            console.log('Inside get / fn')
-            beerCollection.find().toArray() // Insert the request into the database specified above (using .body from bodyparser)
-                .then(result => {
-                    // console.log(userEmail.keys(email))
-                    let userBudLight // userEmail.beers
-                    let userName
-                    if (userEmail) {
-                        userName = req.user.username
-                        userBudLight = userEmail.beers
-                    } else {
-                        userName = ''
-                        userBudLight = '0'
-                    }
-                    userName = req.user.name
-                    res.render('index.ejs', { userBeerCollection, userBudLight, errorMessage, userName })
-                })
-                .catch(error => console.log(error)) //What if theres en error in accessing data from endpoint
-        })
-
+        beerCollection = db.collection('beers') // Create collection on the database
     })
     .catch(error => {
         console.log(`We have an error: ${error}`)
     })
+
+app.post('/beers', (req, res) => { // When a post request is made to the /beers endpoint on form submit, the following will happen
+
+    // ==== Instatiates user object with email, beers, and ip address. ====//
+    userEmail = {
+        "username": req.body.fullName,
+        "beers": 0,
+        ip_address: ip.address()
+    }
+    console.log(userEmail.username)
+
+    if (userArr.length === 0) {     // Edge case if first entry
+        userArr.push(userEmail)
+    } else {
+        for (let i = 0; i < userArr.length; i++) { // Adds user if it does not exist
+            if (userArr[i].username === req.body.fullName) {
+                break  // Breaks for loop if found
+            }
+            if (i === userArr.length - 1) { // If for loop ends without finding an email, add user
+                userArr.push(userEmail)
+            }
+        }
+    }
+    console.log('hello')
+
+    // ==== VALIDATE ALL FORM INPUTS ==== //
+    if (!req.body.beerName || !req.body.abv || !req.body.quantity) {
+        errorMessage = 'You must fill out the whole form'
+        res.redirect('/')
+    } else if (req.body.abv < 0 || req.body.abv > 20) {
+        errorMessage = 'Please enter a reasonable alcohol percentage'
+        res.redirect('/')
+    } else if (req.body.quantity < 0) {
+        errorMessage = 'If you drank negative beers you are doing this wrong. Enter a positive # of beers'
+        res.redirect('/')
+    } else if (req.body.quantity > 30) {
+        errorMessage = 'This calculator supports a maximum of one (1) Wade Boggs per entry. Enter how many beers you drank.'
+        res.redirect('/')
+    } else { // Form inputs correct -> do the following
+        // Convert to bud lights
+
+        // beerCollection.insertOne(req.body) // Insert the request into the database specified above (using .body from bodyparser)
+        beerCollection.insertOne({
+            username: req.user.username,
+            beerName: req.body.beerName,
+            quantity: req.body.quantity,
+            abv: req.body.abv,
+            volume: req.body.volume
+        })
+            .then(result => {
+                console.log('beercollectionstarted')
+                beerCollection.find({ username: req.user.username }).toArray() //Once added, we find all the database entries with that email
+                    .then(result => {
+                        userBeerCollection = result
+                        console.log(userBeerCollection)
+                        for (let i = 0; i < result.length; i++) { // Perform the calculation
+                            let selectedInput = result[i]
+                            totalAlcoholContent += Math.round(Number(selectedInput.abv) * parseInt(selectedInput.quantity) * parseInt(selectedInput.volume))
+                        }
+                        budLights = Math.round((totalAlcoholContent / (4.2 * 12)) * 100) / 100
+                        totalAlcoholContent = 0
+                        userEmail.beers = budLights
+
+                    })
+                res.redirect('/')   //We don't need to do anything so we redirect it back to main page
+                errorMessage = ''
+            })
+            .catch(error => console.log(error)) //What if theres en error in accessing data from endpoint
+    }
+})
+
+app.delete('/beers', (req, res) => {
+    beerCollection.deleteMany({ fullName: userEmail.username }) // Delete all collections in the DB for that user
+        .then(results => { // Manual reset of all variables
+            totalAlcoholContent = 0
+            budLights = 0
+            // userObj[userEmail] = 0
+            userBeerCollection = [] // EJS to read nothing 
+            userEmail = {}
+            errorMessage = ''
+            res.json("hello") // Sends response to client side JS so promise can be resolved.
+        })
+        .catch(error => console.log(error)) //What if theres en error in accessing data from endpoint
+
+})
+
+app.get('/', checkAuthenticated, (req, res) => { // If path = /, run the function
+    console.log('Inside get / fn')
+    beerCollection.find().toArray() // Insert the request into the database specified above (using .body from bodyparser)
+        .then(result => {
+            // console.log(userEmail.keys(email))
+            let userBudLight // userEmail.beers
+            let userName
+            if (userEmail) {
+                userName = req.user.username
+                userBudLight = userEmail.beers
+            } else {
+                userName = ''
+                userBudLight = '0'
+            }
+            userName = req.user.name
+            res.render('index.ejs', { userBeerCollection, userBudLight, errorMessage, userName })
+        })
+        .catch(error => console.log(error)) //What if theres en error in accessing data from endpoint
+})
 //======== DATABASE INTERACTION END ========//
 
 // Gets called by FailureRedirect
