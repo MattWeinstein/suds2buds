@@ -38,9 +38,6 @@ let dbConnectionStr = process.env.DB_STRING
 let sessionSecret = process.env.SESSION_SECRET
 const oneDay = 24 * 1000 * 60 * 60
 
-console.log(dbConnectionStr)
-console.log(sessionSecret)
-
 app.set('view engine', 'ejs')
 app.use(express.json()) // Lets us look into request package
 app.use(express.urlencoded({ extended: true })) // Lets us look into request package
@@ -62,6 +59,9 @@ app.use(methodOverride('_method')) //Override form method - post -> delete
 MongoClient.connect(dbConnectionStr)
     .then(client => {
         console.log('connected to the database')
+        app.listen(process.env.PORT || port, function () {
+            console.log('Server is running')
+        })
         const db = client.db('suds2buds') // which database will be be using? (name on MongoDB)
         const beerCollection = db.collection('beers') // Create collection on the database
 
@@ -231,7 +231,3 @@ function checkNotAuthenticated(req, res, next) {//If you are authenticated, you 
     }
     next()
 }
-
-app.listen(process.env.PORT || port, function () {
-    console.log('Server is running')
-})
