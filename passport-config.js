@@ -6,10 +6,10 @@ function initialize(passport, getUserByUsername, getUserById) {
 
     const authenticateUser = async (username, password, done) => {
         const user = getUserByUsername(username) //Find us a user by email
-        console.log('done')
+        console.log('result', user)
 
         if (user == null) { //User will be undefined if cannot find, thus same value (triple equal will not work)
-            return done(null, false, { message: 'No user with that email' })
+            return done(null, false, { message: 'No user with that username' })
         }
         try {
             if (await bcrypt.compare(password, user.password)) { // Compares password entered to password on the user object(found above)

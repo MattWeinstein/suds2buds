@@ -151,6 +151,7 @@ MongoClient.connect(dbConnectionStr)
         })
 
         app.get('/', checkAuthenticated, (req, res) => { // If path = /, run the function
+            console.log('Inside get / fn')
             beerCollection.find().toArray() // Insert the request into the database specified above (using .body from bodyparser)
                 .then(result => {
                     // console.log(userEmail.keys(email))
@@ -175,22 +176,22 @@ MongoClient.connect(dbConnectionStr)
     })
 //======== DATABASE INTERACTION END ========//
 
+// Gets called by FailureRedirect
 app.get('/login', checkNotAuthenticated, (req, res) => {
     res.render('login.ejs')
 })
 
+// Post on /login route called on form submit
 app.post('/login', checkNotAuthenticated, passport.authenticate('local', { //Passport middleware to handle all redirects upon login
     successRedirect: '/',
     failureRedirect: '/login',
     failureFlash: true //Displays flash message to user (whatever is set in the error messages)
 }))
 app.get('/register', checkNotAuthenticated, (req, res) => {
-    console.log('Not authenticated')
     res.render('register.ejs')
 })
 
 app.post('/register', checkNotAuthenticated, async (req, res) => {
-    console.log('Yes authenticated')
 
     try {
         const hashedPassword = await bcrypt.hash(req.body.password, 10)
