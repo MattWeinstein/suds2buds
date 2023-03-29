@@ -13,10 +13,8 @@ function initialize(passport, getUserByUsername, getUserById) {
         }
         try {
             if (await bcrypt.compare(password, user.password)) { // Compares password entered to password on the user object(found above)
-                console.log('sucess')
                 return done(null, user)
             } else {
-                console.log('wrong')
                 return done(null, false, { message: 'Password incorrect' })
             }
         } catch (e) {

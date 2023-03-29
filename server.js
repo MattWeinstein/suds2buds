@@ -78,7 +78,6 @@ app.post('/beers/', (req, res) => { // When a post request is made to the /beers
         "beers": 0,
         ip_address: ip.address()
     }
-    console.log(userEmail.username)
 
     if (userArr.length === 0) {     // Edge case if first entry
         userArr.push(userEmail)
@@ -92,7 +91,6 @@ app.post('/beers/', (req, res) => { // When a post request is made to the /beers
             }
         }
     }
-    console.log('hello')
 
     // ==== VALIDATE ALL FORM INPUTS ==== //
     if (!req.body.beerName || !req.body.abv || !req.body.quantity) {
@@ -156,10 +154,8 @@ app.delete('/beers/', (req, res) => {
 })
 
 app.get('/', checkAuthenticated, (req, res) => { // If path = /, run the function
-    console.log('Inside get / fn')
     beerCollection.find().toArray() // Insert the request into the database specified above (using .body from bodyparser)
         .then(result => {
-            // console.log(userEmail.keys(email))
             let userBudLight // userEmail.beers
             let userName
             if (userEmail) {
@@ -207,7 +203,6 @@ app.post('/register/', checkNotAuthenticated, async (req, res) => {
     } catch {
         res.redirect('/register/')
     }
-    console.log(users)
 })
 
 app.get('/beers/', (req, res) => { //Make request to our own API
