@@ -22,11 +22,23 @@ const port = 1111
 let users = []
 
 const initializePassport = require('./passport-config')
-initializePassport(
+console.log(initializePassport(
     passport,
     username => users.find(user => {
         console.log('username', user.username);
         return user.username === username
+    }), // getUserByEmail function
+    id => users.find(user => user.id === id) // getUserById function
+))
+initializePassport(
+    passport,
+    username => users.find(user => {
+        console.log('username', user.username);
+        if (user.username === username) {
+            return username
+        } else {
+            return null
+        }
     }), // getUserByEmail function
     id => users.find(user => user.id === id) // getUserById function
 )
