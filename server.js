@@ -32,14 +32,7 @@ console.log(initializePassport(
 ))
 initializePassport(
     passport,
-    username => users.find(user => {
-        console.log('username', user.username);
-        if (user.username === username) {
-            return username
-        } else {
-            return null
-        }
-    }), // getUserByEmail function
+    username => users.find(user => user.username === username), // getUserByEmail function
     id => users.find(user => user.id === id) // getUserById function
 )
 
