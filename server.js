@@ -184,6 +184,7 @@ app.get('/', checkAuthenticated, (req, res) => { // If path = /, run the functio
 // Gets called by FailureRedirect
 app.get('/login/', checkNotAuthenticated, (req, res) => {
     console.log('login route')
+    console.log(users.length, users)
     res.render('login.ejs')
 })
 
