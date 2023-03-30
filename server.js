@@ -174,11 +174,13 @@ app.get('/', checkAuthenticated, (req, res) => { // If path = /, run the functio
 
 // Gets called by FailureRedirect
 app.get('/login/', checkNotAuthenticated, (req, res) => {
+    console.log('login route')
     res.render('login.ejs')
 })
 
 // Post on /login route called on form submit
 app.post('/login/', checkNotAuthenticated, passport.authenticate('local', { //Passport middleware to handle all redirects upon login
+
     successRedirect: '/',
     failureRedirect: '/login/',
     failureFlash: true //Displays flash message to user (whatever is set in the error messages)
@@ -198,6 +200,7 @@ app.post('/register/', checkNotAuthenticated, async (req, res) => {
             password: hashedPassword,
             beers: 0
         })
+        console.log('users', users)
 
         res.redirect('/login/')
     } catch {
