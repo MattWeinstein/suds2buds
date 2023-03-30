@@ -62,12 +62,13 @@ app.use(methodOverride('_method')) //Override form method - post -> delete
 //======== DATABASE INTERACTION START ========//
 MongoClient.connect(dbConnectionStr)
     .then(client => {
+
+        const db = client.db('suds2buds') // which database will be be using? (name on MongoDB)
+        beerCollection = db.collection('beers') // Create collection on the database
         console.log('connected to the database')
         app.listen(process.env.PORT || port, function () {
             console.log(`Server is running on port ${process.env.PORT || port}`)
         })
-        const db = client.db('suds2buds') // which database will be be using? (name on MongoDB)
-        beerCollection = db.collection('beers') // Create collection on the database
     })
     .catch(error => {
         console.log(`We have an error: ${error}`)
