@@ -24,7 +24,10 @@ let users = []
 const initializePassport = require('./passport-config')
 initializePassport(
     passport,
-    username => users.find(user => user.username === username), // getUserByEmail function
+    username => users.find(user => {
+        console.log('username', user.username);
+        return user.username === username
+    }), // getUserByEmail function
     id => users.find(user => user.id === id) // getUserById function
 )
 
@@ -61,7 +64,7 @@ MongoClient.connect(dbConnectionStr)
     .then(client => {
         console.log('connected to the database')
         app.listen(process.env.PORT || port, function () {
-            console.log('Server is running')
+            console.log(`Server is running on port ${process.env.PORT || port}`)
         })
         const db = client.db('suds2buds') // which database will be be using? (name on MongoDB)
         beerCollection = db.collection('beers') // Create collection on the database
