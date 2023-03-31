@@ -59,7 +59,7 @@ initializePassport(
 
 let budLights = 0
 let totalAlcoholContent = 0
-let errorMessage
+let errorMessage = ''
 const userArr = []
 let userBeerCollection = []
 let dbConnectionStr = process.env.DB_STRING
@@ -185,26 +185,41 @@ app.post('/login/', checkNotAuthenticated, passport.authenticate('local', { //Pa
     failureFlash: true //Displays flash message to user (whatever is set in the error messages)
 }))
 app.get('/register/', checkNotAuthenticated, (req, res) => {
-    res.render('register.ejs')
+    res.render('register.ejs', { errorMessage })
+    errorMessage = ''
 })
 
 app.post('/register/', checkNotAuthenticated, async (req, res) => {
-
     try {
         const hashedPassword = await bcrypt.hash(req.body.password, 10)
-        userCollection.insertOne({
-            id: Date.now().toString(),
-            name: req.body.name,
-            username: req.body.username,
-            password: hashedPassword,
-            beers: 0
-        }).then(result => {
-            console.log(result.acknowledged ? 'User added' : 'Unsuccesful')
-        })
 
-        res.redirect('/login/')
-    } catch {
-        res.redirect('/register/')
+        userCollection.find().toArray()
+            .then(result => {
+                for (let i = 0; i < result.length; i++) {
+                    if (result[i].username == req.body.username) {
+                        errorMessage = "There is already a user with that username"
+                        res.redirect('/register/')
+                        break
+                    } else if (i == result.length - 1) {
+                        addUser()
+                    }
+                }
+            }).catch(err => console.log(err))
+
+        function addUser() {
+            userCollection.insertOne({
+                id: Date.now().toString(),
+                name: req.body.name,
+                username: req.body.username,
+                password: hashedPassword,
+                beers: 0
+            }).then(result => {
+                console.log(result.acknowledged ? 'User added' : 'Unsuccesful')
+                res.redirect('/login/')
+            })
+        }
+    } catch (err) {
+        console.log(err)
     }
 })
 
