@@ -33,32 +33,39 @@ const { userInfo } = require('os')
 const app = express()
 const port = 1111
 
-let users = []
-
 const initializePassport = require('./passport-config')
-console.log(initializePassport(
-    passport,
-    username => users.find(user => {
-        console.log('username', user.username);
-        return user.username === username
-    }), // getUserByEmail function
-    id => users.find(user => user.id === id) // getUserById function
-))
+
 initializePassport(
     passport,
-    username => users.find(user => user.username === username), // getUserByEmail function
-    id => users.find(user => user.id === id) // getUserById function
+    username => {
+        let selectedUser
+        // userCollection.find({username:username})
+        return userCollection.find({ username: username }).toArray()
+            .then(result => {
+                selectedUser = result;
+                return selectedUser[0]
+            })
+    }, // getUserByEmail function
+    id => {
+        let selectedUser
+        // userCollection.find({username:username})
+        return userCollection.find({ id: id }).toArray()
+            .then(result => {
+                selectedUser = result;
+                return selectedUser[0]
+            })
+    }
 )
 
 let budLights = 0
 let totalAlcoholContent = 0
 let errorMessage
-let userEmail
 const userArr = []
 let userBeerCollection = []
 let dbConnectionStr = process.env.DB_STRING
 let sessionSecret = process.env.SESSION_SECRET
 let beerCollection
+let userCollection
 const oneDay = 24 * 1000 * 60 * 60
 
 app.set('view engine', 'ejs')
@@ -83,7 +90,8 @@ MongoClient.connect(dbConnectionStr)
     .then(client => {
 
         const db = client.db('suds2buds') // which database will be be using? (name on MongoDB)
-        beerCollection = db.collection('beers') // Create collection on the database
+        beerCollection = db.collection('beers') // Access collection on the database
+        userCollection = db.collection('users')
         console.log('connected to the database')
         app.listen(process.env.PORT || port, function () {
             console.log(`Server is running on port ${process.env.PORT || port}`)
@@ -94,26 +102,6 @@ MongoClient.connect(dbConnectionStr)
     })
 
 app.post('/beers/', (req, res) => { // When a post request is made to the /beers endpoint on form submit, the following will happen
-
-    // ==== Instatiates user object with email, beers, and ip address. ====//
-    userEmail = {
-        "username": req.body.fullName,
-        "beers": 0,
-        ip_address: ip.address()
-    }
-
-    if (userArr.length === 0) {     // Edge case if first entry
-        userArr.push(userEmail)
-    } else {
-        for (let i = 0; i < userArr.length; i++) { // Adds user if it does not exist
-            if (userArr[i].username === req.body.fullName) {
-                break  // Breaks for loop if found
-            }
-            if (i === userArr.length - 1) { // If for loop ends without finding an email, add user
-                userArr.push(userEmail)
-            }
-        }
-    }
 
     // ==== VALIDATE ALL FORM INPUTS ==== //
     if (!req.body.beerName || !req.body.abv || !req.body.quantity) {
@@ -151,8 +139,6 @@ app.post('/beers/', (req, res) => { // When a post request is made to the /beers
                         }
                         budLights = Math.round((totalAlcoholContent / (4.2 * 12)) * 100) / 100
                         totalAlcoholContent = 0
-                        userEmail.beers = budLights
-
                     })
                 res.redirect('/')   //We don't need to do anything so we redirect it back to main page
                 errorMessage = ''
@@ -162,13 +148,11 @@ app.post('/beers/', (req, res) => { // When a post request is made to the /beers
 })
 
 app.delete('/beers/', (req, res) => {
-    beerCollection.deleteMany({ fullName: userEmail.username }) // Delete all collections in the DB for that user
+    beerCollection.deleteMany({ username: req.user.username }) // Delete all collections in the DB for that user
         .then(results => { // Manual reset of all variables
             totalAlcoholContent = 0
             budLights = 0
-            // userObj[userEmail] = 0
             userBeerCollection = [] // EJS to read nothing 
-            userEmail = {}
             errorMessage = ''
             res.json("hello") // Sends response to client side JS so promise can be resolved.
         })
@@ -179,16 +163,9 @@ app.delete('/beers/', (req, res) => {
 app.get('/', checkAuthenticated, (req, res) => { // If path = /, run the function
     beerCollection.find().toArray() // Insert the request into the database specified above (using .body from bodyparser)
         .then(result => {
-            let userBudLight // userEmail.beers
-            let userName
-            if (userEmail) {
-                userName = req.user.username
-                userBudLight = userEmail.beers
-            } else {
-                userName = ''
-                userBudLight = '0'
-            }
-            userName = req.user.name
+            let userBudLight = 2
+
+            let userName = req.user.username
             res.render('index.ejs', { userBeerCollection, userBudLight, errorMessage, userName })
         })
         .catch(error => console.log(error)) //What if theres en error in accessing data from endpoint
@@ -197,8 +174,6 @@ app.get('/', checkAuthenticated, (req, res) => { // If path = /, run the functio
 
 // Gets called by FailureRedirect
 app.get('/login/', checkNotAuthenticated, (req, res) => {
-    console.log('login route')
-    console.log(users.length, users)
     res.render('login.ejs')
 })
 
@@ -217,14 +192,15 @@ app.post('/register/', checkNotAuthenticated, async (req, res) => {
 
     try {
         const hashedPassword = await bcrypt.hash(req.body.password, 10)
-        users.push({
+        userCollection.insertOne({
             id: Date.now().toString(),
             name: req.body.name,
             username: req.body.username,
             password: hashedPassword,
             beers: 0
+        }).then(result => {
+            console.log(result.acknowledged ? 'User added' : 'Unsuccesful')
         })
-        console.log('users', users)
 
         res.redirect('/login/')
     } catch {
