@@ -60,7 +60,6 @@ initializePassport(
 let budLights = 0
 let totalAlcoholContent = 0
 let errorMessage = ''
-const userArr = []
 let userBeerCollection = []
 let dbConnectionStr = process.env.DB_STRING
 let sessionSecret = process.env.SESSION_SECRET
@@ -88,7 +87,6 @@ app.use(methodOverride('_method')) //Override form method - post -> delete
 //======== DATABASE INTERACTION START ========//
 MongoClient.connect(dbConnectionStr)
     .then(client => {
-
         const db = client.db('suds2buds') // which database will be be using? (name on MongoDB)
         beerCollection = db.collection('beers') // Access collection on the database
         userCollection = db.collection('users')
@@ -118,7 +116,7 @@ app.post('/beers/', (req, res) => { // When a post request is made to the /beers
         res.redirect('/')
     } else { // Form inputs correct -> do the following
         // Convert to bud lights
-
+        console.log('testUser', req.user)
         // beerCollection.insertOne(req.body) // Insert the request into the database specified above (using .body from bodyparser)
         beerCollection.insertOne({
             username: req.user.username,
@@ -132,9 +130,8 @@ app.post('/beers/', (req, res) => { // When a post request is made to the /beers
                 beerCollection.find({ username: req.user.username }).toArray() //Once added, we find all the database entries with that email
                     .then(result => {
                         userBeerCollection = result
-                        console.log(userBeerCollection)
                         for (let i = 0; i < result.length; i++) { // Perform the calculation
-                            let selectedInput = result[i]
+                            const selectedInput = result[i]
                             totalAlcoholContent += Math.round(Number(selectedInput.abv) * parseInt(selectedInput.quantity) * parseInt(selectedInput.volume))
                         }
                         budLights = Math.round((totalAlcoholContent / (4.2 * 12)) * 100) / 100
@@ -163,7 +160,7 @@ app.delete('/beers/', (req, res) => {
 app.get('/', checkAuthenticated, (req, res) => { // If path = /, run the function
     beerCollection.find().toArray() // Insert the request into the database specified above (using .body from bodyparser)
         .then(result => {
-            let userBudLight = 2
+            let userBudLight = budLights
 
             let userName = req.user.username
             res.render('index.ejs', { userBeerCollection, userBudLight, errorMessage, userName })
@@ -192,16 +189,22 @@ app.get('/register/', checkNotAuthenticated, (req, res) => {
 app.post('/register/', checkNotAuthenticated, async (req, res) => {
     try {
         const hashedPassword = await bcrypt.hash(req.body.password, 10)
-
+        console.log('register request')
         userCollection.find().toArray()
             .then(result => {
-                for (let i = 0; i < result.length; i++) {
-                    if (result[i].username == req.body.username) {
-                        errorMessage = "There is already a user with that username"
-                        res.redirect('/register/')
-                        break
-                    } else if (i == result.length - 1) {
-                        addUser()
+                console.log('result', result)
+                if (result.length === 0) {
+                    addUser()
+                }
+                else {
+                    for (let i = 0; i < result.length; i++) {
+                        if (result[i].username == req.body.username) {
+                            errorMessage = "There is already a user with that username"
+                            res.redirect('/register/')
+                            break
+                        } else if (i == result.length - 1) {
+                            addUser()
+                        }
                     }
                 }
             }).catch(err => console.log(err))

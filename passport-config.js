@@ -25,9 +25,11 @@ function initialize(passport, getUserByUsername, getUserById) {
 
     passport.use(new LocalStrategy(authenticateUser))
     // Local Strategy has builtin username, password. Will get from form and "name" attribute must match
-    passport.serializeUser((user, done) => done(null, user.id)) //Null for error
-    passport.deserializeUser((id, done) => {
-        return done(null, getUserById(id))
+    passport.serializeUser((user, done) => {
+        return done(null, user.id)
+    })  //Null for error
+    passport.deserializeUser(async (id, done) => {
+        return done(null, await getUserById(id))
     })
 }
 
