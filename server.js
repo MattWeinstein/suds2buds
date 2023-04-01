@@ -114,6 +114,8 @@ app.post('/beers/', (req, res) => { // When a post request is made to the /beers
     res.redirect('/')
   } else { // Form inputs correct -> do the following
     // beerCollection.insertOne(req.body) // Insert the request into the database specified above (using .body from bodyparser)
+    console.log('eEEE', req)
+    console.log('RRRRR', req.user)
     beerCollection.insertOne({
       username: req.user.username,
       beerName: req.body.beerName,
