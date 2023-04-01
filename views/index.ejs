@@ -2,75 +2,73 @@
 <html lang="en">
 
 <head>
-	<meta charset="UTF-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<style>
-		@import url('https://fonts.googleapis.com/css2?family=Inconsolata&display=swap');
-	</style>
-	<link rel="stylesheet" href="/css/style.css">
-	<title>Suds 2 Buds</title>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inconsolata&display=swap');
+  </style>
+  <link rel="stylesheet" href="/css/style.css">
+  <title>Suds 2 Buds</title>
 </head>
 
 <body>
-	<main>
-		<h1>Suds 2 Buds</h1>
+  <main>
+    <h1>Suds 2 Buds</h1>
 
-		<h3>
-			<%= errorMessage %>
-		</h3>
-		<h2>
-			<%= userName %>
-		</h2>
+    <h3>
+      <%= errorMessage %>
+    </h3>
+    <h2>
+      <%= userName %>
+    </h2>
 
-		<form method="POST" action="/beers">
-			<section class="formInput">
-				<div>
-					<label for="beerName">Beer Name</label>
-					<input id='beerName' name="beerName" type="text" placeholder="Name of beer">
-				</div>
-				<div>
-					<label for="quantity">Quantity</label>
-					<input id='quantity' name="quantity" type="number" inputmode="numeric"
-						placeholder="Number of Beers">
-				</div>
-				<div>
-					<label for="ABV">ABV</label>
-					<input id='ABV' name="abv" type='number' inputmode="decimal" step='.01'
-						placeholder="Alcohol Percentage">
-				</div>
-				<div>
-					<label for="volumes">Size</label>
-					<select id="volumes" name="volume">
-						<option value=10>10oz</option>
-						<option value=12 selected>12oz</option>
-						<option value=16oz>16oz</option>
-					</select>
-				</div>
-				<button class="button">Calculate</button>
-			</section>
-		</form>
-		<section id="results">
+    <form method="POST" action="/beers">
+      <section class="formInput">
+        <div>
+          <label for="beerName">Beer Name</label>
+          <input id='beerName' name="beerName" type="text" placeholder="Name of beer">
+        </div>
+        <div>
+          <label for="quantity">Quantity</label>
+          <input id='quantity' name="quantity" type="number" inputmode="numeric" placeholder="Number of Beers">
+        </div>
+        <div>
+          <label for="ABV">ABV</label>
+          <input id='ABV' name="abv" type='number' inputmode="decimal" step='.01' placeholder="Alcohol Percentage">
+        </div>
+        <div>
+          <label for="volumes">Size</label>
+          <select id="volumes" name="volume">
+            <option value=10>10oz</option>
+            <option value=12 selected>12oz</option>
+            <option value=16oz>16oz</option>
+          </select>
+        </div>
+        <button class="button">Calculate</button>
+      </section>
+    </form>
+    <section id="results">
 
-			<% for (let i=0;i<userBeerCollection.length;i++) {%>
-				<%if(i===0){%>
-					<h2>
-						<%=userName%> has consumed <%= userBudLight%> Bud Lights
-					</h2>
+      <% for (let i=0;i<userBeerCollection.length;i++) {%>
+        <%if(i===0){%>
+          <h2>
+            <%=userName%> has consumed <%= budLights%> Bud Lights
+          </h2>
 
-					<% }%>
-						<p>I drank <%= userBeerCollection[i].quantity%>
-								<%= userBeerCollection[i].beerName%>'s </p>
-						<% } %>
-		</section>
-		<div id="buttonDiv">
-			<button id='deleteButton' class="button">Reset</button>
-			<form method="POST" action="/logout?_method=DELETE">
-				<button type="submit" class="button" id="logoutButton">Log out</button>
-			</form>
-		</div>
+          <% }%>
+            <p>I drank <%= userBeerCollection[i].quantity%>
+                <%= userBeerCollection[i].beerName%>'s </p>
+            <% } %>
+    </section>
+    <div id="buttonDiv">
+      <button id='deleteButton' class="button">Reset</button>
+      <form method="POST" action="/logout?_method=DELETE">
+        <button type="submit" class="button" id="logoutButton">Log out</button>
+      </form>
+    </div>
 
-	</main>
+  </main>
 </body>
 <script src="/main.js"></script>
 
