@@ -17,6 +17,7 @@ const app = express()
 const port = 1111
 
 const initializePassport = require('./passport-config')
+const cookieSession = require('cookie-session')
 
 initializePassport(
   passport,
@@ -54,7 +55,7 @@ app.use(express.urlencoded({ extended: true })) // Lets us look into request pac
 app.use(express.static(__dirname + '/public/')) // All files in public folder are being read
 app.use(flash())
 app.use(cookieParser())
-app.use(session({
+app.use(cookieSession({
   secret: sessionSecret, //Should be set to random numbers to make more secret
   cookie: { maxAge: oneDay }, //Cookie expiry time
   saveUninitialized: true, //Do you want to save an empty value in the session if there is nothing saved
