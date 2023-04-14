@@ -1,20 +1,3 @@
-// Have # of bud lights show up in DOM 
-// Show all other beers in DOM
-// Host on Heroku
-
-/**
- * TODO:
- * The app is failing because of the nature of Cyclic - it is serverless and only runs when a request is made
- * This means it cannot store data serverside. It must be in a database (how it should be)
- * Our users array must be changed from serverside to Mongo DB
- * 
- * Steps:
- * 1. Create a new cluster
- * 2. Connect app to cluster
- * 3. Write from app when register
- * 4. Check in cluster for users
- * 5. Add delete all button
- */
 require('dotenv').config()
 
 const http = require('http')
@@ -27,7 +10,7 @@ const res = require('express/lib/response')
 const passport = require('passport')
 const flash = require('express-flash')
 const cookieParser = require('cookie-parser')
-const session = require('express-session')
+const session = require('cookie-session')
 const methodOverride = require('method-override')
 const { userInfo } = require('os')
 const app = express()
